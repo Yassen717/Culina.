@@ -1,9 +1,15 @@
 import { Link, useLocation } from "wouter";
-import { Home, Search, PlusSquare, Heart, User } from "lucide-react";
+import { Home, Search, PlusSquare, Heart, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function BottomNav() {
   const [location] = useLocation();
+  const { user } = useAuth();
+
+  // Hide nav if not logged in
+  if (!user) return null;
 
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
@@ -39,6 +45,10 @@ export function BottomNav() {
 
 export function Sidebar() {
   const [location] = useLocation();
+  const { user, logoutMutation } = useAuth();
+
+  // Hide sidebar if not logged in
+  if (!user) return null;
 
   const navItems = [
     { icon: Home, label: "Home", path: "/" },
@@ -77,12 +87,23 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto px-4 py-4 border-t border-border">
-        <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-orange-300" />
-          <div className="text-sm">
-            <p className="font-medium">Guest User</p>
-            <p className="text-xs text-muted-foreground">Sign Out</p>
+      <div className="mt-auto pt-4 border-t border-border">
+         <div 
+            onClick={() => logoutMutation.mutate()}
+            className="flex items-center gap-3 cursor-pointer p-2 hover:bg-muted rounded-lg transition-colors group mb-2"
+          >
+            <LogOut className="text-muted-foreground group-hover:text-destructive transition-colors" size={20} />
+            <span className="text-sm font-medium text-muted-foreground group-hover:text-destructive transition-colors">Sign Out</span>
+          </div>
+
+        <div className="flex items-center gap-3 p-2">
+          <Avatar className="w-9 h-9 border border-border">
+            <AvatarImage src={user.avatar} />
+            <AvatarFallback>{user.name[0]}</AvatarFallback>
+          </Avatar>
+          <div className="text-sm overflow-hidden">
+            <p className="font-medium truncate">{user.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.handle}</p>
           </div>
         </div>
       </div>

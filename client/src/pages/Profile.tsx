@@ -1,12 +1,19 @@
-import { MOCK_USERS, MOCK_POSTS } from '@/lib/data';
+import { MOCK_POSTS } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Settings, Grid, Bookmark, ChefHat } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function Profile() {
-  // Use user1 as the "current user" for demo
-  const user = MOCK_USERS['user1'];
+  const { user } = useAuth();
+  
+  // Fallback if user is null (though protected route prevents this)
+  if (!user) return null;
+
+  // In a real app, we'd fetch posts for this specific user ID
+  // For this mock, if it's the demo user (user1), we show their posts
+  // If it's a newly registered user, they have no posts yet
   const userPosts = MOCK_POSTS.filter(p => p.userId === user.id);
 
   return (
@@ -69,29 +76,40 @@ export default function Profile() {
           </TabsList>
 
           <TabsContent value="posts" className="mt-0">
-            <div className="grid grid-cols-3 gap-1 md:gap-4">
-              {userPosts.map((post) => (
-                <div key={post.id} className="aspect-square bg-muted relative group cursor-pointer">
-                  <img src={post.image} alt="" className="w-full h-full object-cover" />
-                  {post.isRecipe && (
-                    <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">
-                      <ChefHat size={12} />
-                    </div>
-                  )}
-                </div>
-              ))}
-              {/* Fill with some placeholders for visual fullness */}
-              {[1,2,3].map(i => (
-                <div key={i} className="aspect-square bg-muted/30 flex items-center justify-center text-muted-foreground/20 border border-dashed border-muted-foreground/20">
-                  <Grid size={32} />
-                </div>
-              ))}
-            </div>
+            {userPosts.length > 0 ? (
+              <div className="grid grid-cols-3 gap-1 md:gap-4">
+                {userPosts.map((post) => (
+                  <div key={post.id} className="aspect-square bg-muted relative group cursor-pointer">
+                    <img src={post.image} alt="" className="w-full h-full object-cover" />
+                    {post.isRecipe && (
+                      <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full">
+                        <ChefHat size={12} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+               <div className="py-20 text-center flex flex-col items-center text-muted-foreground">
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                    <Grid size={32} className="opacity-50"/>
+                  </div>
+                  <p className="font-medium">No posts yet</p>
+                  <p className="text-sm">Capture your first culinary moment.</p>
+                  <Button variant="link" className="mt-2 text-primary">Create Post</Button>
+               </div>
+            )}
           </TabsContent>
           
           <TabsContent value="recipes">
             <div className="py-10 text-center text-muted-foreground">
               No separate recipes yet.
+            </div>
+          </TabsContent>
+
+          <TabsContent value="saved">
+             <div className="py-10 text-center text-muted-foreground">
+              No saved items yet.
             </div>
           </TabsContent>
         </Tabs>
