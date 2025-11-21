@@ -10,9 +10,11 @@ const COLLECTION_ID_PROFILES = import.meta.env.VITE_APPWRITE_COLLECTION_ID_PROFI
 const BUCKET_ID_IMAGES = import.meta.env.VITE_APPWRITE_BUCKET_ID_IMAGES ?? 'images';
 
 if (!PROJECT_ID) {
-  // Fail fast with a clear message to help developers configure env vars correctly.
-  throw new Error(
-    'Missing VITE_APPWRITE_PROJECT_ID. Please set it in your .env file (see .env.example).'
+  // Warn instead of throwing so the app can render and show the auth screen.
+  // Auth actions will fail until VITE_APPWRITE_PROJECT_ID is provided.
+  // eslint-disable-next-line no-console
+  console.warn(
+    'FeastFlow: VITE_APPWRITE_PROJECT_ID is not set. Auth will be disabled until you set it in your .env. See .env.example.'
   );
 }
 
@@ -27,7 +29,10 @@ export const APPWRITE_CONFIG = {
 
 export const client = new Client();
 
-client.setEndpoint(APPWRITE_CONFIG.ENDPOINT).setProject(APPWRITE_CONFIG.PROJECT_ID);
+client.setEndpoint(APPWRITE_CONFIG.ENDPOINT);
+if (PROJECT_ID) {
+  client.setProject(PROJECT_ID);
+}
 
 export const account = new Account(client);
 export const databases = new Databases(client);

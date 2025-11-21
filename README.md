@@ -55,14 +55,12 @@ This repository is organized as a monorepo with `client/`, `server/`, and `share
   - `vite.config.ts` – Vite config with path aliases `@`, `@shared`, `@assets`
   - `tsconfig.json` – TS project references and path mapping
   - `drizzle.config.ts` – Drizzle config (PostgreSQL); expects `DATABASE_URL` if used
-  - `.replit` – Replit build/run/deploy settings
   - `postcss.config.js`, `components.json`, `package.json`, etc.
 
 ## Development
 
 Prerequisites:
 - Node.js 20+
-- Optional: Replit environment (repo includes `.replit` config)
 
 Install dependencies:
 
@@ -105,7 +103,7 @@ This serves the static client from `dist/public` and runs the Node server bundle
 ## Environment Variables
 
 - Server
-  - `PORT` – Port to run the server (default 5000). Set in `.replit` as 5000.
+  - `PORT` – Port to run the server (default 5000).
   - `DATABASE_URL` – Required by `drizzle.config.ts` if you intend to use Drizzle/Neon/Postgres. The current app uses in-memory storage by default.
 
 - Client (Appwrite via Vite env)
@@ -162,7 +160,6 @@ Defined in `vite.config.ts` and `tsconfig.json`:
 
 ## Deployment Notes
 
-- The `.replit` config sets a static deployment of the built client from `dist/public`. The Node server can also be hosted separately if needed.
 - Ensure you run `npm run build` prior to deployment.
 - If you wire up Drizzle to a real database, set `DATABASE_URL` securely.
 
