@@ -4,6 +4,7 @@ import { Settings, Grid, Bookmark, ChefHat } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/use-auth';
+import { Link } from 'wouter';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -30,7 +31,9 @@ export default function Profile() {
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-2xl font-bold">{user.handle}</h1>
               <Button variant="outline" size="sm">Edit Profile</Button>
-              <Button variant="ghost" size="icon"><Settings size={20} /></Button>
+              <Link href="/settings">
+                <Button variant="ghost" size="icon"><Settings size={20} /></Button>
+              </Link>
             </div>
 
             <div className="flex items-center gap-8 mb-4 text-sm md:text-base">
