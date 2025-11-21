@@ -11,6 +11,7 @@ import RecipeView from "@/pages/RecipeView";
 import Explore from "@/pages/Explore";
 import Create from "@/pages/Create";
 import Profile from "@/pages/Profile";
+import Activity from "@/pages/Activity";
 import AuthPage from "@/pages/AuthPage";
 import { BottomNav, Sidebar } from "@/components/Navigation";
 
@@ -23,6 +24,7 @@ function Router() {
           <ProtectedRoute path="/" component={Home} />
           <ProtectedRoute path="/explore" component={Explore} />
           <ProtectedRoute path="/create" component={Create} />
+          <ProtectedRoute path="/activity" component={Activity} />
           <ProtectedRoute path="/profile" component={Profile} />
           <ProtectedRoute path="/recipe/:id" component={RecipeView} />
           <Route path="/auth" component={AuthPage} />
