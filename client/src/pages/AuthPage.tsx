@@ -11,8 +11,11 @@ import { useLocation } from "wouter";
 export default function AuthPage() {
   const { user, loginMutation, registerMutation } = useAuth();
   const [, setLocation] = useLocation();
-  const [username, setUsername] = useState("");
+  
+  // Form states
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
 
   // If already logged in, redirect to home
   if (user) {
@@ -22,12 +25,12 @@ export default function AuthPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate({ username, password });
+    loginMutation.mutate({ email, password });
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    registerMutation.mutate({ username, password });
+    registerMutation.mutate({ email, password, name });
   };
 
   return (
@@ -52,16 +55,17 @@ export default function AuthPage() {
               <form onSubmit={handleLogin}>
                 <CardHeader>
                   <CardTitle>Welcome Back</CardTitle>
-                  <CardDescription>Enter your credentials to access your account.</CardDescription>
+                  <CardDescription>Enter your email to access your account.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
+                    <Label htmlFor="email">Email</Label>
                     <Input 
-                      id="username" 
-                      placeholder="ChefMario" 
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      id="email" 
+                      type="email"
+                      placeholder="chef@example.com" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required 
                     />
                   </div>
@@ -94,13 +98,24 @@ export default function AuthPage() {
                   <CardDescription>Join our community of food lovers today.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-username">Username</Label>
+                   <div className="space-y-2">
+                    <Label htmlFor="reg-name">Full Name</Label>
                     <Input 
-                      id="reg-username" 
-                      placeholder="Choose a handle"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      id="reg-name" 
+                      placeholder="Mario Rossi"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-email">Email</Label>
+                    <Input 
+                      id="reg-email" 
+                      type="email"
+                      placeholder="chef@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required 
                     />
                   </div>
