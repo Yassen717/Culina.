@@ -108,13 +108,24 @@ This serves the static client from `dist/public` and runs the Node server bundle
   - `PORT` – Port to run the server (default 5000). Set in `.replit` as 5000.
   - `DATABASE_URL` – Required by `drizzle.config.ts` if you intend to use Drizzle/Neon/Postgres. The current app uses in-memory storage by default.
 
-- Client (Appwrite)
-  - Update `client/src/lib/appwrite.ts` with your Appwrite configuration. At minimum:
-    - `APPWRITE_CONFIG.ENDPOINT` – Appwrite endpoint (default points to cloud)
-    - `APPWRITE_CONFIG.PROJECT_ID` – Your Appwrite Project ID
-    - Optional IDs if you use Databases/Storage: `DATABASE_ID`, `COLLECTION_ID_*`, `BUCKET_ID_IMAGES`
+- Client (Appwrite via Vite env)
+  - Create a `.env` file at the repo root (or alongside `client/`) by copying `.env.example` and fill in values:
 
-Note: For a production-ready setup, consider moving these client settings to environment-driven configuration and avoiding committing secrets.
+```bash
+cp .env.example .env
+# then edit .env
+```
+
+  - Required keys (must be prefixed with `VITE_` to be available in the browser):
+    - `VITE_APPWRITE_ENDPOINT` – Appwrite endpoint (default is `https://cloud.appwrite.io/v1`)
+    - `VITE_APPWRITE_PROJECT_ID` – Your Appwrite Project ID
+    - Optional if using Appwrite Database/Storage:
+      - `VITE_APPWRITE_DATABASE_ID`
+      - `VITE_APPWRITE_COLLECTION_ID_POSTS`
+      - `VITE_APPWRITE_COLLECTION_ID_PROFILES`
+      - `VITE_APPWRITE_BUCKET_ID_IMAGES`
+
+These are consumed in `client/src/lib/appwrite.ts` via `import.meta.env`.
 
 ## Authentication Flow
 
@@ -160,4 +171,3 @@ Defined in `vite.config.ts` and `tsconfig.json`:
 - Implement real API routes in `server/routes.ts` for recipes, profiles, feed, etc.
 - Replace in-memory storage with a persistent database via Drizzle ORM.
 - Wire `data.ts` consumers to real APIs and database.
-- Move client Appwrite configuration to environment variables
