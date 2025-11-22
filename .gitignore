@@ -8,3 +8,24 @@ vite.config.ts.*
 .env
 .env.local
 .env.*.local
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Caches / coverage
+.vite/
+coverage/
+.eslintcache
+
+# TypeScript build info
+*.tsbuildinfo
+
+# OS
+Thumbs.db
