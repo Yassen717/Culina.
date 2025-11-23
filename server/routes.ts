@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertUserSchema } from "@shared/schema";
+import { ZodError } from "zod";
 
 // Minimal mock types used for the posts endpoint. These are intentionally
 // local to the server to avoid coupling server code to client-only modules.
@@ -51,6 +53,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) return res.status(404).json({ message: "User not found" });
       res.json(user);
     } catch (err) {
+      next(err);
+    }
+  });
+
+  // Create user (in-memory) with zod validation from shared schema
+  app.post("/api/users", async (req, res, next) => {
+    try {
+      const input = insertUserSchema.parse(req.body);
+
+      const existing = await storage.getUserByUsername(input.username);
+      if (existing) {
+        return res.status(409).json({ message: "Username already taken" });
+      }
+
+      const user = await storage.createUser(input);
+      // Do not return password in responses
+      const { password: _password, ...safe } = user as any;
+      res.status(201).json(safe);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        return res.status(400).json({ message: "Invalid input", issues: err.errors });
+      }
       next(err);
     }
   });
