@@ -2,9 +2,15 @@ import { MOCK_POSTS, MOCK_USERS } from '@/lib/data';
 import { FoodPost } from '@/components/FoodPost';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Home() {
   const stories = Object.values(MOCK_USERS);
+  const { data: apiPosts, isLoading, isError } = useQuery<Array<typeof MOCK_POSTS[number]>>({
+    queryKey: ["api", "posts"],
+  });
+
+  const posts = apiPosts?.length ? apiPosts : MOCK_POSTS;
 
   return (
     <div className="flex flex-col max-w-xl mx-auto pb-20 pt-4 md:pt-8 px-0 md:px-4">
@@ -50,8 +56,13 @@ export default function Home() {
         </TabsList>
         
         <TabsContent value="for-you" className="mt-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-10 text-muted-foreground">Loading feed…</div>
+          ) : isError ? (
+            <div className="flex items-center justify-center py-10 text-muted-foreground">Could not load feed. Showing demo content.</div>
+          ) : null}
           <div className="flex flex-col gap-0 md:gap-4">
-            {MOCK_POSTS.map((post) => (
+            {posts.map((post) => (
               <FoodPost key={post.id} post={post} />
             ))}
           </div>
