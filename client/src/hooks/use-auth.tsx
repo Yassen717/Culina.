@@ -3,10 +3,12 @@ import { useLocation } from "wouter";
 import { User } from "@/lib/data";
 import { useToast } from "@/hooks/use-toast";
 import { account } from "@/lib/appwrite";
+import { authService, type Profile } from "@/lib/appwrite-services";
 import { ID } from "appwrite";
 
 type AuthContextType = {
   user: User | null;
+  profile: Profile | null;
   isLoading: boolean;
   error: Error | null;
   loginMutation: {
@@ -26,6 +28,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -37,19 +40,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkSession = async () => {
     try {
       const session = await account.get();
-      // In a real app, you would fetch the user profile from the database here
-      // For now, we'll reconstruct a basic user object from the session
-      setUser({
-        id: session.$id,
-        name: session.name,
-        handle: '@' + session.name.toLowerCase().replace(/\s/g, ''),
-        avatar: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&h=150&fit=crop&crop=faces', // Placeholder
-        bio: 'Appwrite User',
-        followers: 0,
-        following: 0,
-      });
+
+      // Fetch or create user profile
+      const userProfile = await authService.ensureProfile(
+        session.$id,
+        session.name,
+        session.email
+      );
+
+      if (userProfile) {
+        setProfile(userProfile);
+        // Convert profile to User format for backward compatibility
+        setUser({
+          id: userProfile.userId,
+          name: userProfile.name,
+          handle: userProfile.handle,
+          avatar: userProfile.avatar || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&h=150&fit=crop&crop=faces',
+          bio: userProfile.bio || '',
+          followers: userProfile.followersCount,
+          following: userProfile.followingCount,
+        });
+      }
     } catch (error) {
       setUser(null);
+      setProfile(null);
     } finally {
       setIsLoading(false);
     }
@@ -126,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        profile,
         isLoading,
         error: null,
         loginMutation,
