@@ -5,8 +5,12 @@ import { Client, Account, Databases, Storage } from 'appwrite';
 const ENDPOINT = import.meta.env.VITE_APPWRITE_ENDPOINT ?? 'https://cloud.appwrite.io/v1';
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID as string | undefined;
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID ?? 'culina_db';
-const COLLECTION_ID_POSTS = import.meta.env.VITE_APPWRITE_COLLECTION_ID_POSTS ?? 'posts';
 const COLLECTION_ID_PROFILES = import.meta.env.VITE_APPWRITE_COLLECTION_ID_PROFILES ?? 'profiles';
+const COLLECTION_ID_RECIPES = import.meta.env.VITE_APPWRITE_COLLECTION_ID_RECIPES ?? 'recipes';
+const COLLECTION_ID_POSTS = import.meta.env.VITE_APPWRITE_COLLECTION_ID_POSTS ?? 'posts';
+const COLLECTION_ID_COMMENTS = import.meta.env.VITE_APPWRITE_COLLECTION_ID_COMMENTS ?? 'comments';
+const COLLECTION_ID_LIKES = import.meta.env.VITE_APPWRITE_COLLECTION_ID_LIKES ?? 'likes';
+const COLLECTION_ID_FOLLOWS = import.meta.env.VITE_APPWRITE_COLLECTION_ID_FOLLOWS ?? 'follows';
 const BUCKET_ID_IMAGES = import.meta.env.VITE_APPWRITE_BUCKET_ID_IMAGES ?? 'images';
 
 if (!PROJECT_ID) {
@@ -22,8 +26,12 @@ export const APPWRITE_CONFIG = {
   ENDPOINT,
   PROJECT_ID,
   DATABASE_ID,
-  COLLECTION_ID_POSTS,
   COLLECTION_ID_PROFILES,
+  COLLECTION_ID_RECIPES,
+  COLLECTION_ID_POSTS,
+  COLLECTION_ID_COMMENTS,
+  COLLECTION_ID_LIKES,
+  COLLECTION_ID_FOLLOWS,
   BUCKET_ID_IMAGES,
 } as const;
 
